@@ -1,13 +1,26 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi.middleware.cors import CORSMiddleware
 
 from FAST_API.src.database.db import get_db
 from FAST_API.src.routes import contacts
+from FAST_API.src.routes import auth
 
 app = FastAPI()
 
+origins = ['*']
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=['*'],
+    allow_headers=["*"],
+    allow_credentials=True
+)
+
+
+app.include_router(auth.router, prefix='/api')
 app.include_router(contacts.router, prefix='/api')
 
 @app.get("/")

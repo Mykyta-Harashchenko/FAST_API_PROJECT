@@ -1,6 +1,7 @@
 import contextlib
 
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase
 
 from FAST_API.src.conf.config import config
 
