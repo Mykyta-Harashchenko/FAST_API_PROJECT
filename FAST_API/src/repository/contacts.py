@@ -7,6 +7,7 @@ from sqlalchemy import select
 from FAST_API.src.entity.models import Contacts
 from FAST_API.src.database.db import get_db
 from FAST_API.src.schemas.contacts import ContactSchema, ContactUpdateSchema, ContactResponse
+from FAST_API.src.services.auth import auth_service
 
 
 async def get_contacts(limit: int, offset: int, db: AsyncSession):
@@ -14,7 +15,7 @@ async def get_contacts(limit: int, offset: int, db: AsyncSession):
     contacts = await db.execute(stmt)
     return contacts.scalars().all()
 
-async def get_contact(contact_id: int, db: AsyncSession):
+async def get_contact(contact_id: int, db: AsyncSession, ):
     stmt = select(Contacts).filter_by(id=contact_id)
     contacts = await db.execute(stmt)
     return contacts.scalar_one_or_none()
