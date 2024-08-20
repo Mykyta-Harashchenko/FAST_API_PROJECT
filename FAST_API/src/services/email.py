@@ -18,22 +18,39 @@ conf = ConnectionConfig(
     MAIL_SSL_TLS=True,
     USE_CREDENTIALS=True,
     VALIDATE_CERTS=True,
-    TEMPLATE_FOLDER=Path(__file__).parent / 'templates',
+    TEMPLATE_FOLDER=Path(__file__).parent / "templates",
 )
 
 
 async def send_email(email: EmailStr, username: str, host: str):
+    """
+    Sends an email to the user with a verification link.
+
+    :param email: The user's email address
+    :param username: The user's username
+    :param host: The base URL of the host server
+    :return: None
+    """
     try:
+        # Create an email token for verification
         token_verification = auth_service.create_email_token({"sub": email})
+
+        # Create the message schema for the email
         message = MessageSchema(
-            subject="Confirm your email ",
+            subject="Confirm your email",
             recipients=[email],
-            template_body={"host": host, "username": username, "token": token_verification},
-            subtype=MessageType.html
+            template_body={
+                "host": host,
+                "username": username,
+                "token": token_verification,
+            },
+            subtype=MessageType.html,
         )
 
+        # Send the email using FastMail
         fm = FastMail(conf)
         await fm.send_message(message, template_name="verify_email.html")
-    except ConnectionErrors as err:
-        print(err)
 
+    except ConnectionErrors as err:
+        # Handle connection errors
+        print(err)
